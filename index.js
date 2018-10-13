@@ -1,4 +1,4 @@
-const { insert2Or4InRandEmptyCell } = require("./lib");
+const { insert2Or4InRandEmptyCell } = require("./src/game");
 
 let board = [
     [0, 0, 0, 0],
