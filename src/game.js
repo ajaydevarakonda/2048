@@ -130,8 +130,34 @@ const addDown = board => {
     return newBoard;
 }
 
+const addRight = (board) => {
+    let newBoard = board.slice();    
+    for (let row = 0; row < newBoard.length; ++row) {
+        for (let col = 0; col < newBoard[row].length - 1; ++col) {            
+            if (newBoard[row][col] === newBoard[row][col+1]) {                                
+                newBoard[row][col+1] *= 2;
+                newBoard[row][col] = 0;
+            }
+        }
+    }    
+    return newBoard;
+}
+
+const addLeft = (board) => {
+    let newBoard = board.slice();    
+    for (let row = 0; row < newBoard.length; ++row) {
+        for (let col = 1; col < newBoard[row].length; ++col) {            
+            if (newBoard[row][col] === newBoard[row][col-1]) {                                
+                newBoard[row][col-1] *= 2;
+                newBoard[row][col] = 0;
+            }
+        }
+    }    
+    return newBoard;
+}
+
 module.exports = {
     placenew, selRandEmptyCell, insert2Or4InRandEmptyCell, squishLeft, squishRight,
     squishDown, squishUp, squishBoardUp, squishBoardDown, squishBoardLeft, squishBoardRight,
-    addUp, addDown
+    addUp, addDown, addLeft, addRight
 }

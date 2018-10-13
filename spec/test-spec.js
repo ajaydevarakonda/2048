@@ -1,6 +1,7 @@
 const { compose, twoDIterate, setColIn2DArr, getColFrom2DArr, } = require("../src/util");
 const { insert2Or4InRandEmptyCell, squishUp, squishDown, squishBoardUp,
-squishBoardDown, squishBoardLeft, squishBoardRight, addUp, addDown } = require("../src/game");
+squishBoardDown, squishBoardLeft, squishBoardRight, addUp, addDown,
+addLeft, addRight } = require("../src/game");
 
 
 
@@ -200,7 +201,7 @@ describe("addUp()", function() {
 })
 
 describe("addDown()", function() {
-    it("Adds two numbers if they are the same in the UP direction.", function() {
+    it("Adds two numbers if they are the same in the DOWN direction.", function() {
         let board = [
             [2, 0, 2, 0],
             [0, 2, 0, 2],
@@ -216,4 +217,42 @@ describe("addDown()", function() {
             [4, 0, 0, 2],
         ]);        
     })
-})
+});
+
+describe("addLeft()", function() {
+    it("Adds two numbers if they are the same in the LEFT direction.", function() {
+        let board = [
+            [2, 0, 2, 0],
+            [0, 2, 0, 2],
+            [0, 2, 2, 0],
+            [4, 0, 0, 2],
+        ];
+
+        let newBoard = addLeft(board);
+        expect(newBoard).toEqual([
+            [2, 0, 2, 0],
+            [0, 2, 0, 2],
+            [0, 4, 0, 0],
+            [4, 0, 0, 2],
+        ]);        
+    })
+});
+
+describe("addRight()", function() {
+    it("Adds two numbers if they are the same in the RIGHT direction.", function() {
+        let board = [
+            [2, 0, 2, 0],
+            [0, 2, 0, 2],
+            [0, 2, 2, 0],
+            [4, 0, 0, 2],
+        ];
+
+        let newBoard = addRight(board);
+        expect(newBoard).toEqual([
+            [2, 0, 2, 0],
+            [0, 2, 0, 2],
+            [0, 0, 4, 0],
+            [4, 0, 0, 2],
+        ]);        
+    })
+});
