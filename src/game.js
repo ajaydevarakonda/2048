@@ -1,8 +1,16 @@
 const {
     compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers, 
-    bloatZerosThenNumbers, bloatNumbersThenZeros, fillArr
+    bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2
 } = require("../src/util");
 
+const EventEmitter = require("events");
+
+const createEventEmitter = () => {
+    let gameTransmitter = new EventEmitter();
+    return () => gameTransmitter;
+}
+
+const gameTransmitter = createEventEmitter();
 
 /**
  * Updates board's given cell with given value.
@@ -39,7 +47,7 @@ const squishLeft = arr => {
     // TODO: simplify using compose and the new functions
     // first fill without zeros and pad with zeros
     let numbersArr = arr.filter(el => el !== 0);
-    return fillArr(numbersArr, 0, arr.length - numbersArr.length);
+    return bloatNumbersThenZeros(numbersArr, arr.length - numbersArr.length);
 }
 
 const squishRight = arr => {    
@@ -47,7 +55,7 @@ const squishRight = arr => {
     // first pad with necessary number of zeros and then add numbers.
     let numbersArr = arr.filter(el => el !== 0);
     let newArr = [];
-    newArr = fillArr(newArr, 0, arr.length - numbersArr.length);
+    newArr = bloatNumbersThenZeros(newArr, arr.length - numbersArr.length);
     newArr.push(...numbersArr);
     return newArr;
 }
@@ -58,7 +66,7 @@ const squishDown = (board, colNo) => {
     return compose(
         setThisColInBoard, // most local function.
         (nonZerosArr => bloatZerosThenNumbers(nonZerosArr, board.length - nonZerosArr.length)),
-        getNonZeroNumbers,
+        getNumbersGreaterThan2,
         getColFrom2DArr,
     )({ twoDArray: board, colNo });
 }
@@ -76,7 +84,7 @@ const squishUp = (board, colNo) => {
     return compose(
         setThisColInBoard, // most local function
         (nonZerosArr => bloatNumbersThenZeros(nonZerosArr, board.length - nonZerosArr.length)),
-        getNonZeroNumbers,
+        getNumbersGreaterThan2,
         getColFrom2DArr,
     )({ twoDArray: board, colNo });
     
@@ -99,10 +107,6 @@ const squishBoardDown = board => {
 
 const squishBoardRight = board => board.map((row) => squishRight(row));
 const squishBoardLeft = board => board.map((row) => squishLeft(row));
-
-const upMove = () => {
-    // squish, then , squish again.
-}
 
 const addUp = (board) => {
     let newBoard = board.slice();    
@@ -146,18 +150,45 @@ const addRight = (board) => {
 const addLeft = (board) => {
     let newBoard = board.slice();    
     for (let row = 0; row < newBoard.length; ++row) {
-        for (let col = 1; col < newBoard[row].length; ++col) {            
+        for (let col = 0; col < newBoard[row].length; ++col) {                        
             if (newBoard[row][col] === newBoard[row][col-1]) {                                
                 newBoard[row][col-1] *= 2;
                 newBoard[row][col] = 0;
             }
         }
-    }    
-    return newBoard;
+    }
+   return newBoard;
 }
+
+const upMove = (board) => 
+    compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardUp, addUp, squishBoardUp)(board);
+
+const downMove = (board) => 
+    compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardDown, addDown, squishBoardDown)(board);
+
+const rightMove = board =>
+    compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardRight, addRight, squishBoardRight)(board);
+
+const leftMove = board =>
+    compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardLeft, addLeft, squishBoardLeft)(board);
+
+const checkIfWon = board => {    
+    board.forEach(row =>
+        row.forEach(cell => {
+            if (cell === 2048)
+                gameTransmitter().emit('WIN');
+        })
+    );
+    return board;
+}
+
+const alertWon = () => alert("2048! You've won!");
+const cleanBoard = (rows, cols) => (new Array(rows)).map(() => getArrayOfZeros(cols))
+const new4X4Board = cleanBoard.bind(4, 4);
 
 module.exports = {
     placenew, selRandEmptyCell, insert2Or4InRandEmptyCell, squishLeft, squishRight,
     squishDown, squishUp, squishBoardUp, squishBoardDown, squishBoardLeft, squishBoardRight,
-    addUp, addDown, addLeft, addRight
+    addUp, addDown, addLeft, addRight, upMove, downMove, rightMove, leftMove, 
+    gameTransmitter, new4X4Board
 }

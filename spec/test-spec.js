@@ -1,7 +1,7 @@
 const { compose, twoDIterate, setColIn2DArr, getColFrom2DArr, } = require("../src/util");
 const { insert2Or4InRandEmptyCell, squishUp, squishDown, squishBoardUp,
-squishBoardDown, squishBoardLeft, squishBoardRight, addUp, addDown,
-addLeft, addRight } = require("../src/game");
+squishBoardDown, squishBoardLeft, squishBoardRight, addUp, addDown, downMove, rightMove, leftMove,
+addLeft, addRight, upMove, checkIfWon, gameTransmitter } = require("../src/game");
 
 
 
@@ -256,3 +256,87 @@ describe("addRight()", function() {
         ]);        
     })
 });
+
+describe("upMove()", function() {
+    it("Makes the upward move", function() {
+        let board = [
+            [2, 0, 2, 0],
+            [0, 2, 0, 2],
+            [0, 2, 2, 0],
+            [4, 0, 0, 2],
+        ];
+
+        let newBoard = upMove(board);
+        expect(newBoard[0][0]).toEqual(2);
+        expect(newBoard[0][1]).toEqual(4);
+        expect(newBoard[0][2]).toEqual(4);
+        expect(newBoard[0][3]).toEqual(4);
+        expect(newBoard[1][0]).toEqual(4);        
+    })
+});
+
+describe("downMove()", function(){
+    it("Makes the downward move", function() {
+        let board = [
+            [2, 0, 2, 0],
+            [0, 2, 0, 2],
+            [0, 2, 2, 0],
+            [4, 0, 0, 2],
+        ];
+
+        let newBoard = downMove(board);
+        // [0, 0, 0, 0],
+        // [0, 0, 0, 0],
+        // [2, 0, 0, 0],
+        // [4, 4, 4, 4],
+        expect(newBoard[2][0]).toEqual(2);
+        expect(newBoard[3][0]).toEqual(4);
+        expect(newBoard[3][1]).toEqual(4);
+        expect(newBoard[3][2]).toEqual(4);
+        expect(newBoard[3][3]).toEqual(4);        
+    });
+})
+
+describe("rightMove()", function(){
+    it("Makes the rightward move", function() {
+        let board = [
+            [2, 0, 2, 0],
+            [0, 2, 0, 2],
+            [0, 2, 2, 0],
+            [4, 0, 0, 2],
+        ];
+
+        let newBoard = rightMove(board);
+
+        expect(newBoard[0][3]).toEqual(4);
+        expect(newBoard[1][3]).toEqual(4);
+        expect(newBoard[2][3]).toEqual(4);
+        expect(newBoard[3][2]).toEqual(4);
+        expect(newBoard[3][3]).toEqual(2);
+    });
+})
+
+describe("leftMove()", function(){
+    it("Makes the leftward move", function() {
+        let board = [
+            [2, 0, 2, 0],
+            [0, 2, 0, 2],
+            [0, 2, 2, 0],
+            [4, 0, 0, 2],
+        ];
+
+        let newBoard = leftMove(board);
+        expect(newBoard[0][0]).toEqual(4);
+        expect(newBoard[1][0]).toEqual(4);
+        expect(newBoard[2][0]).toEqual(4);
+        expect(newBoard[3][0]).toEqual(4);
+        expect(newBoard[3][1]).toEqual(2);
+    });
+})
+
+describe("checkiIfWon()", function() {
+    it("Sends WIN event if the board has a 2048 in it", function() {
+        let winSpy = jasmine.createSpy('WIN');
+                
+    });    
+})

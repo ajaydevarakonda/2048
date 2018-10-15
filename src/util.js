@@ -35,24 +35,17 @@ const twoDIterate = (twoDArray, cb, endOfRowCb=null) => {
     }
 }
 
-// TODO: once all tests work
-const fillArr = (arr, el, times) => {
-    let newArr = arr.slice(); // shallow copy
-    for (let i = 0; i < times; ++i) 
-        newArr.push(el);
-    return newArr;
-}
-
 // Get col from 2d array
 // NOTE: error prone if the given column is out of range.
-const getColFrom2DArr = ({ twoDArray, colNo }) => twoDArray.map(row => row[colNo]); //  board.map(row => row[colNo]);{ board, colNo }
+const getColFrom2DArr = ({ twoDArray, colNo }) => twoDArray.map(row => row[colNo]);
 const setColIn2DArr = (twoDArray, colNo, col) => twoDArray.map(
     // [all before columns, our number, all after columns]
     (row, index) => [...row.slice(0, colNo), col[index], ...row.slice(colNo+1)]
 );
 
 // return non zero values in an array.
-const getNonZeroNumbers = arr => arr.filter(num => num >= 2);
+const getNonZeroNumbers = (minNumber, arr) => arr.filter(num => num >= minNumber);
+const getNumbersGreaterThan2 = getNonZeroNumbers.bind(null, 2);
 
 const getArrayOfZeros = numberOfZeros =>
     Array.apply(null, Array(numberOfZeros)).map(Number.prototype.valueOf, 0);
@@ -77,7 +70,7 @@ const bloatNumbersThenZeros = bloatArrayWithZeros.bind(null, false);
 
 
 module.exports = {
-    bloatArrayWithZeros, bloatNumbersThenZeros, bloatZerosThenNumbers, compose, curry, 
-    fillArr, getColFrom2DArr, getNonZeroNumbers, selectInt, randInt, setColIn2DArr, 
-    setColIn2DArr, twoDIterate,
+    bloatArrayWithZeros, bloatNumbersThenZeros, bloatZerosThenNumbers, compose, curry,
+    getColFrom2DArr, getNonZeroNumbers, selectInt, randInt, setColIn2DArr, 
+    setColIn2DArr, twoDIterate, getNumbersGreaterThan2
 };
