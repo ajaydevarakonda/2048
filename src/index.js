@@ -5,7 +5,7 @@
 
 const { insert2Or4InRandEmptyCell, upMove, downMove, rightMove, leftMove, gameTransmitter,
     alertWon, alertLost, new4X4Board
-} = require("./game");
+} = require("./game-lib");
 const { compose } = require("./util");
 
 const init = () => compose(

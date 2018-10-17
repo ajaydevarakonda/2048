@@ -524,10 +524,17 @@ function functionBindPolyfill(context) {
 }
 
 },{}],2:[function(require,module,exports){
-// Works both in cli and browser
+
+/**
+ * Functions that are some what related to the game, but abstracted as much as possible 
+ * but are high level and prevent too much work. 
+ * Level 1 abstraction
+ */
+
+
 const {
-    compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers, 
-    bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2, getArrayOfZeros    
+    compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers,
+    bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2, getArrayOfZeros
 } = require("../src/util");
 
 
@@ -568,7 +575,7 @@ const selRandEmptyCell = board => {
 const insert2Or4InRandEmptyCell = (board) => {
     let dupBoard = board.slice(); // shallow copy.
     let { row, col } = selRandEmptyCell(dupBoard);
-    return placenew(dupBoard, row, col, selectInt(2, 4, 0.6));    
+    return placenew(dupBoard, row, col, selectInt(2, 4, 0.6));
 };
 
 const squishLeft = arr => {
@@ -578,7 +585,7 @@ const squishLeft = arr => {
     return bloatNumbersThenZeros(numbersArr, arr.length - numbersArr.length);
 }
 
-const squishRight = arr => {    
+const squishRight = arr => {
     // TODO: simplify using compose and the new functions
     // first pad with necessary number of zeros and then add numbers.
     let numbersArr = arr.filter(el => el !== 0);
@@ -590,7 +597,7 @@ const squishRight = arr => {
 
 const squishDown = (board, colNo) => {
     let setThisColInBoard = setColIn2DArr.bind(null, board, colNo);
-    
+
     return compose(
         setThisColInBoard, // most local function.
         (nonZerosArr => bloatZerosThenNumbers(nonZerosArr, board.length - nonZerosArr.length)),
@@ -606,7 +613,7 @@ const squishDown = (board, colNo) => {
  * @param   {int}     col 
  * @returns {Array}         Returns a new board with given column squished to the top.
  */
-const squishUp = (board, colNo) => {    
+const squishUp = (board, colNo) => {
     let setThisColInBoard = setColIn2DArr.bind(null, board, colNo);
 
     return compose(
@@ -615,21 +622,21 @@ const squishUp = (board, colNo) => {
         getNumbersGreaterThan2,
         getColFrom2DArr,
     )({ twoDArray: board, colNo });
-    
+
 }
 
 const squishBoardUp = board => {
     let newBoard = board.slice();
     // as a board as many columns as rows
     for (let colNo = 0; colNo < board.length; ++colNo)
-        newBoard = squishUp(newBoard, colNo);        
+        newBoard = squishUp(newBoard, colNo);
     return newBoard;
 }
 
 const squishBoardDown = board => {
     let newBoard = board.slice();
     for (let colNo = 0; colNo < board.length; ++colNo)
-        newBoard = squishDown(newBoard, colNo);        
+        newBoard = squishDown(newBoard, colNo);
     return newBoard;
 }
 
@@ -637,61 +644,61 @@ const squishBoardRight = board => board.map((row) => squishRight(row));
 const squishBoardLeft = board => board.map((row) => squishLeft(row));
 
 const addUp = (board) => {
-    let newBoard = board.slice();    
+    let newBoard = board.slice();
     for (let row = 1; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {            
-            if (newBoard[row][col] === newBoard[row-1][col]) {                                
-                newBoard[row-1][col] *= 2;
-                newBoard[row][col] = 0;
-            }
-        }
-    }    
-    return newBoard;
-}
-
-const addDown = board => {    
-    let newBoard = board.slice();    
-    for (let row = 0; row < newBoard.length - 1; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {            
-            if (newBoard[row][col] === newBoard[row+1][col]) {                                
-                newBoard[row+1][col] *= 2;
-                newBoard[row][col] = 0;
-            }
-        }
-    }    
-    return newBoard;
-}
-
-const addRight = (board) => {
-    let newBoard = board.slice();    
-    for (let row = 0; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length - 1; ++col) {            
-            if (newBoard[row][col] === newBoard[row][col+1]) {                                
-                newBoard[row][col+1] *= 2;
-                newBoard[row][col] = 0;
-            }
-        }
-    }    
-    return newBoard;
-}
-
-const addLeft = (board) => {
-    let newBoard = board.slice();    
-    for (let row = 0; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {                        
-            if (newBoard[row][col] === newBoard[row][col-1]) {                                
-                newBoard[row][col-1] *= 2;
+        for (let col = 0; col < newBoard[row].length; ++col) {
+            if (newBoard[row][col] === newBoard[row - 1][col]) {
+                newBoard[row - 1][col] *= 2;
                 newBoard[row][col] = 0;
             }
         }
     }
-   return newBoard;
+    return newBoard;
 }
 
-const upMove = (board) => 
+const addDown = board => {
+    let newBoard = board.slice();
+    for (let row = 0; row < newBoard.length - 1; ++row) {
+        for (let col = 0; col < newBoard[row].length; ++col) {
+            if (newBoard[row][col] === newBoard[row + 1][col]) {
+                newBoard[row + 1][col] *= 2;
+                newBoard[row][col] = 0;
+            }
+        }
+    }
+    return newBoard;
+}
+
+const addRight = (board) => {
+    let newBoard = board.slice();
+    for (let row = 0; row < newBoard.length; ++row) {
+        for (let col = 0; col < newBoard[row].length - 1; ++col) {
+            if (newBoard[row][col] === newBoard[row][col + 1]) {
+                newBoard[row][col + 1] *= 2;
+                newBoard[row][col] = 0;
+            }
+        }
+    }
+    return newBoard;
+}
+
+const addLeft = (board) => {
+    let newBoard = board.slice();
+    for (let row = 0; row < newBoard.length; ++row) {
+        for (let col = 0; col < newBoard[row].length; ++col) {
+            if (newBoard[row][col] === newBoard[row][col - 1]) {
+                newBoard[row][col - 1] *= 2;
+                newBoard[row][col] = 0;
+            }
+        }
+    }
+    return newBoard;
+}
+
+const upMove = (board) =>
     compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardUp, addUp, squishBoardUp)(board);
 
-const downMove = (board) => 
+const downMove = (board) =>
     compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardDown, addDown, squishBoardDown)(board);
 
 const rightMove = board =>
@@ -700,7 +707,7 @@ const rightMove = board =>
 const leftMove = board =>
     compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardLeft, addLeft, squishBoardLeft)(board);
 
-const checkIfWon = board => {    
+const checkIfWon = board => {
     board.forEach(row =>
         row.forEach(cell => {
             if (cell === 2048)
@@ -729,15 +736,19 @@ const new4X4Board = cleanBoard.bind(null, 4, 4);
 module.exports = {
     placenew, selRandEmptyCell, insert2Or4InRandEmptyCell, squishLeft, squishRight,
     squishDown, squishUp, squishBoardUp, squishBoardDown, squishBoardLeft, squishBoardRight,
-    addUp, addDown, addLeft, addRight, upMove, downMove, rightMove, leftMove, 
+    addUp, addDown, addLeft, addRight, upMove, downMove, rightMove, leftMove,
     gameTransmitter, new4X4Board, alertWon, alertLost, cleanBoard
 };
 
 },{"../src/util":4,"events":1}],3:[function(require,module,exports){
-// runs only in browser
+/**
+ * Normal game code, less functions, more monolithic.
+ * Level 2 abstraction
+ */
+
 const { insert2Or4InRandEmptyCell, upMove, downMove, rightMove, leftMove, gameTransmitter,
     alertWon, alertLost, new4X4Board
-} = require("./game");
+} = require("./game-lib");
 const { compose } = require("./util");
 
 const init = () => compose(
@@ -746,51 +757,35 @@ const init = () => compose(
     new4X4Board
 )();
 
-// const createRow = row => {
-//     let tr = document.createElement("tr");
-//     row.forEach(element => {
-//         let td = document.createElement("td");
-//         td.innerText = element;
-//         tr.appendChild(td);
-//     });
-//     return tr;
-// }
-
-// const updateBoard = board => {
-//     let boardDiv = document.getElementById("board");
-//     let table = document.createElement("table");
-//     Array.prototype.forEach.call(board, row => { table.appendChild(createRow(row)); });
-//     boardDiv.innerHTML = "";
-//     boardDiv.appendChild(table);
-// }
-
-var app2 = new Vue({
-    el: '#app-2',
+var boardApp = new Vue({
+    el: '#board-app',
     data: {
         board: init()
     }
 });
 
-// let board = init();
-// updateBoard(board);
-
 document.addEventListener('keydown', event => {
     if (event.key.toLowerCase() == "arrowup")
-        app2.board = upMove(app2.board)
+        boardApp.board = upMove(boardApp.board)
     else if (event.key.toLowerCase() == "arrowdown")
-        app2.board = downMove(app2.board);
+        boardApp.board = downMove(boardApp.board);
     else if (event.key.toLowerCase() == "arrowleft")
-        app2.board = leftMove(app2.board)
+        boardApp.board = leftMove(boardApp.board)
     else if (event.key.toLowerCase() == "arrowright")
-        app2.board = rightMove(app2.board)
+        boardApp.board = rightMove(boardApp.board)
 });
 
-gameTransmitter().on('WIN', () => app2.board = compose(init, alertWon)());
-gameTransmitter().on('LOSE', () => app2.board = compose(init, alertLost)());
+gameTransmitter().on('WIN', () => boardApp.board = compose(init, alertWon)());
+gameTransmitter().on('LOSE', () => boardApp.board = compose(init, alertLost)());
 
 
-},{"./game":2,"./util":4}],4:[function(require,module,exports){
-// Works both in cli and browser
+},{"./game-lib":2,"./util":4}],4:[function(require,module,exports){
+/**
+ * Contains low level functions, complete abstraction from the game.
+ * Level 0 abstraction 
+ */
+
+
 let compose = (...fns) => (args) => fns.reduceRight((accumulator, fn) => fn(accumulator), args);
 
 const curry = (fn) => {
@@ -812,13 +807,13 @@ const curry = (fn) => {
  * @param   {float} firstPercentInt   Percentage of times to select first integer.
  * @returns {int}                     First integer or second integer.
  */
-const selectInt = (int1, int2, firstPercentInt=0.5) => 
+const selectInt = (int1, int2, firstPercentInt = 0.5) =>
     (Math.random() < firstPercentInt) ? int1 : int2;
 
 const randInt = max => Math.floor(Math.random() * max);
 
 // row wise iteration of 2d array
-const twoDIterate = (twoDArray, cb, endOfRowCb=null) => {
+const twoDIterate = (twoDArray, cb, endOfRowCb = null) => {
     for (let i = 0; i < twoDArray.length; ++i) {
         for (let j = 0; j < twoDArray[i].length; ++j) {
             cb(i, j, twoDArray[i][j]);
@@ -833,7 +828,7 @@ const twoDIterate = (twoDArray, cb, endOfRowCb=null) => {
 const getColFrom2DArr = ({ twoDArray, colNo }) => twoDArray.map(row => row[colNo]);
 const setColIn2DArr = (twoDArray, colNo, col) => twoDArray.map(
     // [all before columns, our number, all after columns]
-    (row, index) => [...row.slice(0, colNo), col[index], ...row.slice(colNo+1)]
+    (row, index) => [...row.slice(0, colNo), col[index], ...row.slice(colNo + 1)]
 );
 
 // return non zero values in an array.
@@ -846,16 +841,16 @@ const getArrayOfZeros = numberOfZeros =>
 // extends an array
 const extend = (arr, otherArr) => arr.push(...otherArr);
 
-const bloatArrayWithZeros = (zerosComeFirst, arr, numberOfZeros) => {        
+const bloatArrayWithZeros = (zerosComeFirst, arr, numberOfZeros) => {
     if (zerosComeFirst) { // zeros, non zero numbers
-        let newArr = [];    
+        let newArr = [];
         newArr = getArrayOfZeros(numberOfZeros);
         extend(newArr, arr);
         return newArr;
     } else { // non zero numbers, zeros        
         let newArr = arr.slice(); // shallow copy or we'll endup pushing into arr.        
-        extend(newArr, getArrayOfZeros(numberOfZeros));        
-        return newArr;        
+        extend(newArr, getArrayOfZeros(numberOfZeros));
+        return newArr;
     }
 };
 const bloatZerosThenNumbers = bloatArrayWithZeros.bind(null, true);
@@ -864,7 +859,7 @@ const bloatNumbersThenZeros = bloatArrayWithZeros.bind(null, false);
 
 module.exports = {
     bloatArrayWithZeros, bloatNumbersThenZeros, bloatZerosThenNumbers, compose, curry,
-    getColFrom2DArr, getNonZeroNumbers, selectInt, randInt, setColIn2DArr, 
+    getColFrom2DArr, getNonZeroNumbers, selectInt, randInt, setColIn2DArr,
     setColIn2DArr, twoDIterate, getNumbersGreaterThan2, getArrayOfZeros
 };
 
