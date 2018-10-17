@@ -1,7 +1,7 @@
 // Works both in cli and browser
 const {
     compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers, 
-    bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2
+    bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2, getArrayOfZeros
 } = require("../src/util");
 
 
@@ -185,12 +185,12 @@ const checkIfWon = board => {
 }
 
 const alertWon = () => alert("2048! You've won!");
-const cleanBoard = (rows, cols) => (new Array(rows)).map(() => getArrayOfZeros(cols))
-const new4X4Board = cleanBoard.bind(4, 4);
+const cleanBoard = (rows, cols) => getArrayOfZeros(rows).map(() => getArrayOfZeros(cols));
+const new4X4Board = cleanBoard.bind(null, 4, 4);
 
 module.exports = {
     placenew, selRandEmptyCell, insert2Or4InRandEmptyCell, squishLeft, squishRight,
     squishDown, squishUp, squishBoardUp, squishBoardDown, squishBoardLeft, squishBoardRight,
     addUp, addDown, addLeft, addRight, upMove, downMove, rightMove, leftMove, 
-    gameTransmitter, new4X4Board, alertWon
+    gameTransmitter, new4X4Board, alertWon, cleanBoard
 };

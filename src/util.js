@@ -73,5 +73,5 @@ const bloatNumbersThenZeros = bloatArrayWithZeros.bind(null, false);
 module.exports = {
     bloatArrayWithZeros, bloatNumbersThenZeros, bloatZerosThenNumbers, compose, curry,
     getColFrom2DArr, getNonZeroNumbers, selectInt, randInt, setColIn2DArr, 
-    setColIn2DArr, twoDIterate, getNumbersGreaterThan2
+    setColIn2DArr, twoDIterate, getNumbersGreaterThan2, getArrayOfZeros
 };

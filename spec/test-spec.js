@@ -2,7 +2,7 @@
 const { compose, twoDIterate, setColIn2DArr, getColFrom2DArr, } = require("../src/util");
 const { insert2Or4InRandEmptyCell, squishUp, squishDown, squishBoardUp,
 squishBoardDown, squishBoardLeft, squishBoardRight, addUp, addDown, downMove, rightMove, leftMove,
-addLeft, addRight, upMove, checkIfWon, gameTransmitter } = require("../src/game");
+addLeft, addRight, upMove, checkIfWon, gameTransmitter, new4X4Board, cleanBoard } = require("../src/game");
 
 
 
@@ -334,3 +334,12 @@ describe("leftMove()", function(){
         expect(newBoard[3][1]).toEqual(2);
     });
 });
+
+describe("new4X4Board()", function() {
+    it("Creates a new 4X4 board", function() {
+        let board = new4X4Board();
+        expect(board.length).toEqual(4);
+        expect(board[0].length).toEqual(4);
+    });
+});
+

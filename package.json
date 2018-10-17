@@ -4,14 +4,14 @@
   "description": "game",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "browserify": "./node_modules/.bin/browserify ./src/*.js -o main.js"
   },
   "author": "Ajay Kumar",
   "license": "ISC",
   "devDependencies": {
+    "browserify": "^16.2.3",
     "jasmine": "^3.2.0"
   },
-  "dependencies": {
-    "browserify": "^16.2.3"
-  }
+  "dependencies": {}
 }
