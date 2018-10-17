@@ -1,17 +1,36 @@
-const { insert2Or4InRandEmptyCell, upMove, downMove, rightMove, leftMove } = require("./src/game");
+// runs only in browser
+import { insert2Or4InRandEmptyCell, upMove, downMove, rightMove, leftMove, gameTransmitter,
+    alertWon, new4X4Board
+} from "./src/game";
 
-let board = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-];
+const init = () => compose(
+        insert2Or4InRandEmptyCell,
+        new4X4Board
+    );
 
-// add 2 new numbers (2 or 4, based on some probab) to board.
-board = insert2Or4InRandEmptyCell(board);
-board = insert2Or4InRandEmptyCell(board);
+const createRow = row => {
+    let tr = document.createElement("tr");
+    row.forEach(element => {
+        let td = document.createElement("td");
+        td.innerText = element;
+        tr.appendChild(td);    
+    });
+    return tr;
+}
 
-document.addEventListener('keydown', (event) => {
+const updateBoard = board => {
+    let boardDiv = document.getElementById("board");
+    let table = document.createElement("table");
+
+    board.forEach(row => table.appendChild(createRow(row)));
+    boardDiv.appendChild(table);
+    console.log(boardDiv)
+}
+
+let board = init();
+updateBoard(board);
+
+document.addEventListener('keydown', event => {
     switch(event.key) {
         case 38:
             board = upMove(board);
@@ -24,5 +43,7 @@ document.addEventListener('keydown', (event) => {
         case 39:
             board = rightMove(board);
     }
+    updateBoard(board);
 });
 
+gameTransmitter().addEventListener('WIN', () => board = compose(new4X4Board, alertWon));

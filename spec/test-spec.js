@@ -1,3 +1,4 @@
+// runs only on node
 const { compose, twoDIterate, setColIn2DArr, getColFrom2DArr, } = require("../src/util");
 const { insert2Or4InRandEmptyCell, squishUp, squishDown, squishBoardUp,
 squishBoardDown, squishBoardLeft, squishBoardRight, addUp, addDown, downMove, rightMove, leftMove,
@@ -332,11 +333,4 @@ describe("leftMove()", function(){
         expect(newBoard[3][0]).toEqual(4);
         expect(newBoard[3][1]).toEqual(2);
     });
-})
-
-describe("checkiIfWon()", function() {
-    it("Sends WIN event if the board has a 2048 in it", function() {
-        let winSpy = jasmine.createSpy('WIN');
-                
-    });    
-})
+});

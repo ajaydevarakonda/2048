@@ -1,7 +1,9 @@
+// Works both in cli and browser
 const {
     compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers, 
     bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2
 } = require("../src/util");
+
 
 const EventEmitter = require("events");
 
@@ -190,5 +192,5 @@ module.exports = {
     placenew, selRandEmptyCell, insert2Or4InRandEmptyCell, squishLeft, squishRight,
     squishDown, squishUp, squishBoardUp, squishBoardDown, squishBoardLeft, squishBoardRight,
     addUp, addDown, addLeft, addRight, upMove, downMove, rightMove, leftMove, 
-    gameTransmitter, new4X4Board
-}
+    gameTransmitter, new4X4Board, alertWon
+};

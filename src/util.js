@@ -1,3 +1,4 @@
+// Works both in cli and browser
 let compose = (...fns) => (args) => fns.reduceRight((accumulator, fn) => fn(accumulator), args);
 
 const curry = (fn) => {
