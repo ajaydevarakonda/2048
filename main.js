@@ -527,7 +527,7 @@ function functionBindPolyfill(context) {
 // Works both in cli and browser
 const {
     compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers, 
-    bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2, getArrayOfZeros
+    bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2, getArrayOfZeros    
 } = require("../src/util");
 
 
@@ -707,10 +707,22 @@ const checkIfWon = board => {
                 gameTransmitter().emit('WIN');
         })
     );
+
+    let emptyRows = 0;
+    board.forEach(row => {
+        if (getNumbersGreaterThan2(row).length < 1)
+            ++emptyRows;
+    });
+
+    if (emptyRows == 4)
+        gameTransmitter().emit('LOSE');
+
     return board;
 }
 
 const alertWon = () => alert("2048! You've won!");
+const alertLost = () => alert("Oops! You lost!");
+
 const cleanBoard = (rows, cols) => getArrayOfZeros(rows).map(() => getArrayOfZeros(cols));
 const new4X4Board = cleanBoard.bind(null, 4, 4);
 
@@ -718,63 +730,65 @@ module.exports = {
     placenew, selRandEmptyCell, insert2Or4InRandEmptyCell, squishLeft, squishRight,
     squishDown, squishUp, squishBoardUp, squishBoardDown, squishBoardLeft, squishBoardRight,
     addUp, addDown, addLeft, addRight, upMove, downMove, rightMove, leftMove, 
-    gameTransmitter, new4X4Board, alertWon, cleanBoard
+    gameTransmitter, new4X4Board, alertWon, alertLost, cleanBoard
 };
 
 },{"../src/util":4,"events":1}],3:[function(require,module,exports){
 // runs only in browser
 const { insert2Or4InRandEmptyCell, upMove, downMove, rightMove, leftMove, gameTransmitter,
-    alertWon, new4X4Board
+    alertWon, alertLost, new4X4Board
 } = require("./game");
 const { compose } = require("./util");
 
 const init = () => compose(
-        insert2Or4InRandEmptyCell,
-        insert2Or4InRandEmptyCell,
-        new4X4Board
-    )();
+    insert2Or4InRandEmptyCell,
+    insert2Or4InRandEmptyCell,
+    new4X4Board
+)();
 
-const createRow = row => {
-    let tr = document.createElement("tr");
-    row.forEach(element => {
-        let td = document.createElement("td");
-        td.innerText = element;
-        tr.appendChild(td);    
-    });
-    return tr;
-}
+// const createRow = row => {
+//     let tr = document.createElement("tr");
+//     row.forEach(element => {
+//         let td = document.createElement("td");
+//         td.innerText = element;
+//         tr.appendChild(td);
+//     });
+//     return tr;
+// }
 
-const updateBoard = board => {
-    let boardDiv = document.getElementById("board");
-    let table = document.createElement("table");    
-    Array.prototype.forEach.call(board, row => { table.appendChild(createRow(row)); } );
-    boardDiv.innerHTML = "";
-    boardDiv.appendChild(table);    
-}
+// const updateBoard = board => {
+//     let boardDiv = document.getElementById("board");
+//     let table = document.createElement("table");
+//     Array.prototype.forEach.call(board, row => { table.appendChild(createRow(row)); });
+//     boardDiv.innerHTML = "";
+//     boardDiv.appendChild(table);
+// }
 
-let board = init();
-updateBoard(board);
-
-document.addEventListener('keydown', event => {
-    let hasClickedDirKey = true;
-    console.log(event.key.toLowerCase())
-    if (event.key.toLowerCase() == "arrowup") {
-        board = upMove(board)
-    } else if (event.key.toLowerCase() == "arrowdown") {
-        board = downMove(board);
-    } else if (event.key.toLowerCase() == "arrowleft") {
-        board = leftMove(board)
-    } else if (event.key.toLowerCase() == "arrowright") {
-        board = rightMove(board)
-    } else {
-        hasClickedDirKey = false;
+var app2 = new Vue({
+    el: '#app-2',
+    data: {
+        board: init()
     }
-    
-    if (hasClickedDirKey)
-        updateBoard(board);
 });
 
-gameTransmitter().on('WIN', () => board = compose(new4X4Board, alertWon)());
+// let board = init();
+// updateBoard(board);
+
+document.addEventListener('keydown', event => {
+    if (event.key.toLowerCase() == "arrowup")
+        app2.board = upMove(app2.board)
+    else if (event.key.toLowerCase() == "arrowdown")
+        app2.board = downMove(app2.board);
+    else if (event.key.toLowerCase() == "arrowleft")
+        app2.board = leftMove(app2.board)
+    else if (event.key.toLowerCase() == "arrowright")
+        app2.board = rightMove(app2.board)
+});
+
+gameTransmitter().on('WIN', () => app2.board = compose(init, alertWon)());
+gameTransmitter().on('LOSE', () => app2.board = compose(init, alertLost)());
+
+
 },{"./game":2,"./util":4}],4:[function(require,module,exports){
 // Works both in cli and browser
 let compose = (...fns) => (args) => fns.reduceRight((accumulator, fn) => fn(accumulator), args);

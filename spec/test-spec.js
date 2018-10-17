@@ -2,7 +2,7 @@
 const { compose, twoDIterate, setColIn2DArr, getColFrom2DArr, } = require("../src/util");
 const { insert2Or4InRandEmptyCell, squishUp, squishDown, squishBoardUp,
 squishBoardDown, squishBoardLeft, squishBoardRight, addUp, addDown, downMove, rightMove, leftMove,
-addLeft, addRight, upMove, checkIfWon, gameTransmitter, new4X4Board, cleanBoard } = require("../src/game");
+addLeft, addRight, upMove, checkIfWon, gameTransmitter, new4X4Board, cleanBoard } = require("../src/game-lib");
 
 
 

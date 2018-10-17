@@ -1,6 +1,13 @@
-// Works both in cli and browser
+
+/**
+ * Functions that are some what related to the game, but abstracted as much as possible 
+ * but are high level and prevent too much work. 
+ * Level 1 abstraction
+ */
+
+
 const {
-    compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers, 
+    compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers,
     bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2, getArrayOfZeros
 } = require("../src/util");
 
@@ -42,7 +49,7 @@ const selRandEmptyCell = board => {
 const insert2Or4InRandEmptyCell = (board) => {
     let dupBoard = board.slice(); // shallow copy.
     let { row, col } = selRandEmptyCell(dupBoard);
-    return placenew(dupBoard, row, col, selectInt(2, 4, 0.6));    
+    return placenew(dupBoard, row, col, selectInt(2, 4, 0.6));
 };
 
 const squishLeft = arr => {
@@ -52,7 +59,7 @@ const squishLeft = arr => {
     return bloatNumbersThenZeros(numbersArr, arr.length - numbersArr.length);
 }
 
-const squishRight = arr => {    
+const squishRight = arr => {
     // TODO: simplify using compose and the new functions
     // first pad with necessary number of zeros and then add numbers.
     let numbersArr = arr.filter(el => el !== 0);
@@ -64,7 +71,7 @@ const squishRight = arr => {
 
 const squishDown = (board, colNo) => {
     let setThisColInBoard = setColIn2DArr.bind(null, board, colNo);
-    
+
     return compose(
         setThisColInBoard, // most local function.
         (nonZerosArr => bloatZerosThenNumbers(nonZerosArr, board.length - nonZerosArr.length)),
@@ -80,7 +87,7 @@ const squishDown = (board, colNo) => {
  * @param   {int}     col 
  * @returns {Array}         Returns a new board with given column squished to the top.
  */
-const squishUp = (board, colNo) => {    
+const squishUp = (board, colNo) => {
     let setThisColInBoard = setColIn2DArr.bind(null, board, colNo);
 
     return compose(
@@ -89,21 +96,21 @@ const squishUp = (board, colNo) => {
         getNumbersGreaterThan2,
         getColFrom2DArr,
     )({ twoDArray: board, colNo });
-    
+
 }
 
 const squishBoardUp = board => {
     let newBoard = board.slice();
     // as a board as many columns as rows
     for (let colNo = 0; colNo < board.length; ++colNo)
-        newBoard = squishUp(newBoard, colNo);        
+        newBoard = squishUp(newBoard, colNo);
     return newBoard;
 }
 
 const squishBoardDown = board => {
     let newBoard = board.slice();
     for (let colNo = 0; colNo < board.length; ++colNo)
-        newBoard = squishDown(newBoard, colNo);        
+        newBoard = squishDown(newBoard, colNo);
     return newBoard;
 }
 
@@ -111,61 +118,61 @@ const squishBoardRight = board => board.map((row) => squishRight(row));
 const squishBoardLeft = board => board.map((row) => squishLeft(row));
 
 const addUp = (board) => {
-    let newBoard = board.slice();    
+    let newBoard = board.slice();
     for (let row = 1; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {            
-            if (newBoard[row][col] === newBoard[row-1][col]) {                                
-                newBoard[row-1][col] *= 2;
-                newBoard[row][col] = 0;
-            }
-        }
-    }    
-    return newBoard;
-}
-
-const addDown = board => {    
-    let newBoard = board.slice();    
-    for (let row = 0; row < newBoard.length - 1; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {            
-            if (newBoard[row][col] === newBoard[row+1][col]) {                                
-                newBoard[row+1][col] *= 2;
-                newBoard[row][col] = 0;
-            }
-        }
-    }    
-    return newBoard;
-}
-
-const addRight = (board) => {
-    let newBoard = board.slice();    
-    for (let row = 0; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length - 1; ++col) {            
-            if (newBoard[row][col] === newBoard[row][col+1]) {                                
-                newBoard[row][col+1] *= 2;
-                newBoard[row][col] = 0;
-            }
-        }
-    }    
-    return newBoard;
-}
-
-const addLeft = (board) => {
-    let newBoard = board.slice();    
-    for (let row = 0; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {                        
-            if (newBoard[row][col] === newBoard[row][col-1]) {                                
-                newBoard[row][col-1] *= 2;
+        for (let col = 0; col < newBoard[row].length; ++col) {
+            if (newBoard[row][col] === newBoard[row - 1][col]) {
+                newBoard[row - 1][col] *= 2;
                 newBoard[row][col] = 0;
             }
         }
     }
-   return newBoard;
+    return newBoard;
 }
 
-const upMove = (board) => 
+const addDown = board => {
+    let newBoard = board.slice();
+    for (let row = 0; row < newBoard.length - 1; ++row) {
+        for (let col = 0; col < newBoard[row].length; ++col) {
+            if (newBoard[row][col] === newBoard[row + 1][col]) {
+                newBoard[row + 1][col] *= 2;
+                newBoard[row][col] = 0;
+            }
+        }
+    }
+    return newBoard;
+}
+
+const addRight = (board) => {
+    let newBoard = board.slice();
+    for (let row = 0; row < newBoard.length; ++row) {
+        for (let col = 0; col < newBoard[row].length - 1; ++col) {
+            if (newBoard[row][col] === newBoard[row][col + 1]) {
+                newBoard[row][col + 1] *= 2;
+                newBoard[row][col] = 0;
+            }
+        }
+    }
+    return newBoard;
+}
+
+const addLeft = (board) => {
+    let newBoard = board.slice();
+    for (let row = 0; row < newBoard.length; ++row) {
+        for (let col = 0; col < newBoard[row].length; ++col) {
+            if (newBoard[row][col] === newBoard[row][col - 1]) {
+                newBoard[row][col - 1] *= 2;
+                newBoard[row][col] = 0;
+            }
+        }
+    }
+    return newBoard;
+}
+
+const upMove = (board) =>
     compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardUp, addUp, squishBoardUp)(board);
 
-const downMove = (board) => 
+const downMove = (board) =>
     compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardDown, addDown, squishBoardDown)(board);
 
 const rightMove = board =>
@@ -174,23 +181,35 @@ const rightMove = board =>
 const leftMove = board =>
     compose(checkIfWon, insert2Or4InRandEmptyCell, squishBoardLeft, addLeft, squishBoardLeft)(board);
 
-const checkIfWon = board => {    
+const checkIfWon = board => {
     board.forEach(row =>
         row.forEach(cell => {
             if (cell === 2048)
                 gameTransmitter().emit('WIN');
         })
     );
+
+    let emptyRows = 0;
+    board.forEach(row => {
+        if (getNumbersGreaterThan2(row).length < 1)
+            ++emptyRows;
+    });
+
+    if (emptyRows == 4)
+        gameTransmitter().emit('LOSE');
+
     return board;
 }
 
 const alertWon = () => alert("2048! You've won!");
+const alertLost = () => alert("Oops! You lost!");
+
 const cleanBoard = (rows, cols) => getArrayOfZeros(rows).map(() => getArrayOfZeros(cols));
 const new4X4Board = cleanBoard.bind(null, 4, 4);
 
 module.exports = {
     placenew, selRandEmptyCell, insert2Or4InRandEmptyCell, squishLeft, squishRight,
     squishDown, squishUp, squishBoardUp, squishBoardDown, squishBoardLeft, squishBoardRight,
-    addUp, addDown, addLeft, addRight, upMove, downMove, rightMove, leftMove, 
-    gameTransmitter, new4X4Board, alertWon, cleanBoard
+    addUp, addDown, addLeft, addRight, upMove, downMove, rightMove, leftMove,
+    gameTransmitter, new4X4Board, alertWon, alertLost, cleanBoard
 };

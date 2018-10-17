@@ -1,4 +1,9 @@
-// Works both in cli and browser
+/**
+ * Contains low level functions, complete abstraction from the game.
+ * Level 0 abstraction 
+ */
+
+
 let compose = (...fns) => (args) => fns.reduceRight((accumulator, fn) => fn(accumulator), args);
 
 const curry = (fn) => {
@@ -20,13 +25,13 @@ const curry = (fn) => {
  * @param   {float} firstPercentInt   Percentage of times to select first integer.
  * @returns {int}                     First integer or second integer.
  */
-const selectInt = (int1, int2, firstPercentInt=0.5) => 
+const selectInt = (int1, int2, firstPercentInt = 0.5) =>
     (Math.random() < firstPercentInt) ? int1 : int2;
 
 const randInt = max => Math.floor(Math.random() * max);
 
 // row wise iteration of 2d array
-const twoDIterate = (twoDArray, cb, endOfRowCb=null) => {
+const twoDIterate = (twoDArray, cb, endOfRowCb = null) => {
     for (let i = 0; i < twoDArray.length; ++i) {
         for (let j = 0; j < twoDArray[i].length; ++j) {
             cb(i, j, twoDArray[i][j]);
@@ -41,7 +46,7 @@ const twoDIterate = (twoDArray, cb, endOfRowCb=null) => {
 const getColFrom2DArr = ({ twoDArray, colNo }) => twoDArray.map(row => row[colNo]);
 const setColIn2DArr = (twoDArray, colNo, col) => twoDArray.map(
     // [all before columns, our number, all after columns]
-    (row, index) => [...row.slice(0, colNo), col[index], ...row.slice(colNo+1)]
+    (row, index) => [...row.slice(0, colNo), col[index], ...row.slice(colNo + 1)]
 );
 
 // return non zero values in an array.
@@ -54,16 +59,16 @@ const getArrayOfZeros = numberOfZeros =>
 // extends an array
 const extend = (arr, otherArr) => arr.push(...otherArr);
 
-const bloatArrayWithZeros = (zerosComeFirst, arr, numberOfZeros) => {        
+const bloatArrayWithZeros = (zerosComeFirst, arr, numberOfZeros) => {
     if (zerosComeFirst) { // zeros, non zero numbers
-        let newArr = [];    
+        let newArr = [];
         newArr = getArrayOfZeros(numberOfZeros);
         extend(newArr, arr);
         return newArr;
     } else { // non zero numbers, zeros        
         let newArr = arr.slice(); // shallow copy or we'll endup pushing into arr.        
-        extend(newArr, getArrayOfZeros(numberOfZeros));        
-        return newArr;        
+        extend(newArr, getArrayOfZeros(numberOfZeros));
+        return newArr;
     }
 };
 const bloatZerosThenNumbers = bloatArrayWithZeros.bind(null, true);
@@ -72,6 +77,6 @@ const bloatNumbersThenZeros = bloatArrayWithZeros.bind(null, false);
 
 module.exports = {
     bloatArrayWithZeros, bloatNumbersThenZeros, bloatZerosThenNumbers, compose, curry,
-    getColFrom2DArr, getNonZeroNumbers, selectInt, randInt, setColIn2DArr, 
+    getColFrom2DArr, getNonZeroNumbers, selectInt, randInt, setColIn2DArr,
     setColIn2DArr, twoDIterate, getNumbersGreaterThan2, getArrayOfZeros
 };

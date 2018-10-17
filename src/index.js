@@ -1,53 +1,37 @@
-// runs only in browser
+/**
+ * Normal game code, less functions, more monolithic.
+ * Level 2 abstraction
+ */
+
 const { insert2Or4InRandEmptyCell, upMove, downMove, rightMove, leftMove, gameTransmitter,
-    alertWon, new4X4Board
+    alertWon, alertLost, new4X4Board
 } = require("./game");
 const { compose } = require("./util");
 
 const init = () => compose(
-        insert2Or4InRandEmptyCell,
-        insert2Or4InRandEmptyCell,
-        new4X4Board
-    )();
+    insert2Or4InRandEmptyCell,
+    insert2Or4InRandEmptyCell,
+    new4X4Board
+)();
 
-const createRow = row => {
-    let tr = document.createElement("tr");
-    row.forEach(element => {
-        let td = document.createElement("td");
-        td.innerText = element;
-        tr.appendChild(td);    
-    });
-    return tr;
-}
-
-const updateBoard = board => {
-    let boardDiv = document.getElementById("board");
-    let table = document.createElement("table");    
-    Array.prototype.forEach.call(board, row => { table.appendChild(createRow(row)); } );
-    boardDiv.innerHTML = "";
-    boardDiv.appendChild(table);    
-}
-
-let board = init();
-updateBoard(board);
-
-document.addEventListener('keydown', event => {
-    let hasClickedDirKey = true;
-    console.log(event.key.toLowerCase())
-    if (event.key.toLowerCase() == "arrowup") {
-        board = upMove(board)
-    } else if (event.key.toLowerCase() == "arrowdown") {
-        board = downMove(board);
-    } else if (event.key.toLowerCase() == "arrowleft") {
-        board = leftMove(board)
-    } else if (event.key.toLowerCase() == "arrowright") {
-        board = rightMove(board)
-    } else {
-        hasClickedDirKey = false;
+var boardApp = new Vue({
+    el: '#board-app',
+    data: {
+        board: init()
     }
-    
-    if (hasClickedDirKey)
-        updateBoard(board);
 });
 
-gameTransmitter().on('WIN', () => board = compose(new4X4Board, alertWon)());
+document.addEventListener('keydown', event => {
+    if (event.key.toLowerCase() == "arrowup")
+        boardApp.board = upMove(boardApp.board)
+    else if (event.key.toLowerCase() == "arrowdown")
+        boardApp.board = downMove(boardApp.board);
+    else if (event.key.toLowerCase() == "arrowleft")
+        boardApp.board = leftMove(boardApp.board)
+    else if (event.key.toLowerCase() == "arrowright")
+        boardApp.board = rightMove(boardApp.board)
+});
+
+gameTransmitter().on('WIN', () => boardApp.board = compose(init, alertWon)());
+gameTransmitter().on('LOSE', () => boardApp.board = compose(init, alertLost)());
+
