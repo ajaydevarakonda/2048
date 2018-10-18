@@ -9,7 +9,7 @@
 const {
     compose, selectInt, getColFrom2DArr, setColIn2DArr, randInt, getNonZeroNumbers,
     bloatZerosThenNumbers, bloatNumbersThenZeros, getNumbersGreaterThan2, getArrayOfZeros
-} = require("../src/util");
+} = require("./util");
 
 
 const EventEmitter = require("events");
@@ -117,55 +117,68 @@ const squishBoardDown = board => {
 const squishBoardRight = board => board.map((row) => squishRight(row));
 const squishBoardLeft = board => board.map((row) => squishLeft(row));
 
+const twoDIter = (twoDArray, cb) => {
+    for (let i = 0; i < twoDArray.length; ++i)
+        for (let j = 0; j < twoDArray[i].length; ++j)
+            cb(i, j);
+}
+
 const addUp = (board) => {
     let newBoard = board.slice();
-    for (let row = 1; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {
+    let iterNewBoard = twoDIter.bind(null, newBoard);
+    iterNewBoard((row, col) => {
+        try {        
             if (newBoard[row][col] === newBoard[row - 1][col]) {
                 newBoard[row - 1][col] *= 2;
                 newBoard[row][col] = 0;
             }
-        }
-    }
+        } catch (err) {}
+    });    
     return newBoard;
 }
 
 const addDown = board => {
     let newBoard = board.slice();
-    for (let row = 0; row < newBoard.length - 1; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {
+    let iterNewBoard = twoDIter.bind(null, newBoard);
+    iterNewBoard((row, col) => {
+        try {
             if (newBoard[row][col] === newBoard[row + 1][col]) {
-                newBoard[row + 1][col] *= 2;
-                newBoard[row][col] = 0;
+                // when adding downwards check if the number and the number below are the 
+                // same, but put the result in the upper of the two selected cells. Else
+                // we'll add twice.
+                // 4        8
+                // 4   ==>  0
+                // 0        0
+                // 0        0
+                newBoard[row][col] *= 2;
+                newBoard[row + 1][col] *= 0;
             }
-        }
-    }
-    return newBoard;
+        } catch (err) {}
+    });    
+    return newBoard;    
 }
 
 const addRight = (board) => {
     let newBoard = board.slice();
-    for (let row = 0; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length - 1; ++col) {
-            if (newBoard[row][col] === newBoard[row][col + 1]) {
-                newBoard[row][col + 1] *= 2;
-                newBoard[row][col] = 0;
-            }
+    let iterNewBoard = twoDIter.bind(null, newBoard);
+    iterNewBoard((row, col) => {
+        if (newBoard[row][col] === newBoard[row][col + 1]) {
+            newBoard[row][col + 1] *= 2;
+            newBoard[row][col] = 0;
         }
-    }
-    return newBoard;
+    });    
+    return newBoard;    
 }
 
 const addLeft = (board) => {
     let newBoard = board.slice();
-    for (let row = 0; row < newBoard.length; ++row) {
-        for (let col = 0; col < newBoard[row].length; ++col) {
-            if (newBoard[row][col] === newBoard[row][col - 1]) {
-                newBoard[row][col - 1] *= 2;
-                newBoard[row][col] = 0;
-            }
+    let iterNewBoard = twoDIter.bind(null, newBoard);
+    iterNewBoard((row, col) => {
+        if (newBoard[row][col] === newBoard[row][col - 1]) {
+            newBoard[row][col - 1] *= 2;
+            newBoard[row][col] = 0;
         }
-    }
+    });    
     return newBoard;
 }
 

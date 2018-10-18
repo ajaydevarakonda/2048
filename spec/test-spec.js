@@ -213,8 +213,8 @@ describe("addDown()", function() {
         let newBoard = addDown(board);
         expect(newBoard).toEqual([
             [2, 0, 2, 0],
-            [0, 0, 0, 2],
-            [0, 4, 2, 0],
+            [0, 4, 0, 2],
+            [0, 0, 2, 0],
             [4, 0, 0, 2],
         ]);        
     })
@@ -273,6 +273,26 @@ describe("upMove()", function() {
         expect(newBoard[0][2]).toEqual(4);
         expect(newBoard[0][3]).toEqual(4);
         expect(newBoard[1][0]).toEqual(4);        
+
+        let board1 = [
+            [2, 8, 2, 0],
+            [0, 0, 0, 2],
+            [0, 4, 2, 0],
+            [4, 4, 0, 2],
+        ];
+
+        let newBoard1 = upMove(board1);
+        // [2, 8, 4, 4],
+        // [4, 8, 0, 0],
+        // [0, 0, 0, 0],
+        // [0, 0, 0, 0],
+        
+        expect(newBoard1[0][0]).toEqual(2);
+        expect(newBoard1[0][1]).toEqual(8);        
+        expect(newBoard1[0][2]).toEqual(4);
+        expect(newBoard1[0][3]).toEqual(4);
+        expect(newBoard1[1][0]).toEqual(4);
+        expect(newBoard1[1][1]).toEqual(8);
     })
 });
 
@@ -284,7 +304,7 @@ describe("downMove()", function(){
             [0, 2, 2, 0],
             [4, 0, 0, 2],
         ];
-
+        
         let newBoard = downMove(board);
         // [0, 0, 0, 0],
         // [0, 0, 0, 0],
@@ -295,6 +315,25 @@ describe("downMove()", function(){
         expect(newBoard[3][1]).toEqual(4);
         expect(newBoard[3][2]).toEqual(4);
         expect(newBoard[3][3]).toEqual(4);        
+
+        let board1 = [
+            [2, 4, 2, 0],
+            [0, 4, 0, 2],
+            [0, 0, 2, 0],
+            [4, 8, 0, 2],
+        ];
+
+        let newBoard1 = downMove(board1);
+        // [0, 0, 0, 0],
+        // [0, 0, 0, 0],
+        // [2, 8, 0, 0],
+        // [4, 8, 4, 4],
+        expect(newBoard1[2][0]).toEqual(2);
+        expect(newBoard1[2][1]).toEqual(8);
+        expect(newBoard1[3][0]).toEqual(4);
+        expect(newBoard1[3][1]).toEqual(8);
+        expect(newBoard1[3][2]).toEqual(4);
+        expect(newBoard1[3][3]).toEqual(4);        
     });
 })
 
